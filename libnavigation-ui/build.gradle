@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.jaredsburrows.license'
 apply plugin: 'com.mapbox.android.sdk.versions'
@@ -52,9 +53,9 @@ dependencies {
   ktlint dependenciesList.ktlint
 
   // Navigation SDK
-  api project(':libnavigation-core')
-  implementation project(':libnavigation-util')
-  implementation project(':libtrip-notification')
+  api "com.mapbox.navigation:core:1.0.0-qa.4"
+  implementation "com.mapbox.navigation:utils:1.0.0-qa.4"
+  implementation "com.mapbox.navigation:notification:1.0.0-qa.4"
 
   // Mapbox
   implementation dependenciesList.mapboxSdkServices
@@ -94,10 +95,6 @@ dependencies {
   testImplementation dependenciesList.robolectric
   testImplementation dependenciesList.json
 }
-
-apply from: 'javadoc.gradle'
-apply from: "${rootDir}/gradle/mvn-push-android.gradle"
-apply from: "${rootDir}/gradle/checkstyle.gradle"
 apply from: "${rootDir}/gradle/jacoco.gradle"
-apply from: "${rootDir}/gradle/dependencies-graph.gradle"
-apply from: "${rootDir}/gradle/dependency-updates.gradle"
+apply from: "${rootDir}/gradle/checkstyle.gradle"
+apply from: "${rootDir}/gradle/bintray-publish.gradle"
