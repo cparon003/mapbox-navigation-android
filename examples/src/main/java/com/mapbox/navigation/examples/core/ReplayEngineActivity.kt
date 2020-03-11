@@ -251,8 +251,8 @@ class ReplayEngineActivity : AppCompatActivity(), OnMapReadyCallback, Permission
         }
 
         override fun onEnhancedLocationChanged(
-                enhancedLocation: Location,
-                keyPoints: List<Location>
+            enhancedLocation: Location,
+            keyPoints: List<Location>
         ) {
             mapView.getMapAsync { mapboxMap ->
                 if (keyPoints.isNotEmpty()) {
