@@ -2,8 +2,6 @@ package com.mapbox.navigation.examples.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.mapbox.android.core.location.LocationEngine
-import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.api.directions.v5.models.BannerInstructions
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.mapboxsdk.location.modes.RenderMode
@@ -23,7 +21,6 @@ import kotlinx.android.synthetic.main.activity_navigation_view.*
 class NavigationViewActivity : AppCompatActivity(), OnNavigationReadyCallback, NavigationListener,
     BannerInstructionsListener {
 
-    private lateinit var localLocationEngine: LocationEngine
     private lateinit var mapboxMap: MapboxMap
     private lateinit var navigationMapboxMap: NavigationMapboxMap
     private lateinit var mapboxNavigation: MapboxNavigation
@@ -32,7 +29,6 @@ class NavigationViewActivity : AppCompatActivity(), OnNavigationReadyCallback, N
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation_view)
 
-        localLocationEngine = LocationEngineProvider.getBestLocationEngine(applicationContext)
         navigationView.onCreate(savedInstanceState)
         navigationView.initialize(this)
     }
