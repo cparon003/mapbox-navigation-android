@@ -35,6 +35,8 @@ import com.mapbox.navigation.core.module.NavigationModuleProvider
 import com.mapbox.navigation.core.telemetry.MapboxNavigationTelemetry
 import com.mapbox.navigation.core.telemetry.MapboxNavigationTelemetry.TAG
 import com.mapbox.navigation.core.telemetry.events.TelemetryUserFeedback
+import com.mapbox.navigation.core.routerefresh.RouteRefreshApi
+import com.mapbox.navigation.core.routerefresh.RouteRefreshController
 import com.mapbox.navigation.core.trip.service.TripService
 import com.mapbox.navigation.core.trip.session.BannerInstructionsObserver
 import com.mapbox.navigation.core.trip.session.LocationObserver
@@ -137,6 +139,7 @@ constructor(
     private val internalRoutesObserver = createInternalRoutesObserver()
     private val internalOffRouteObserver = createInternalOffRouteObserver()
     private val fasterRouteController: FasterRouteController
+    private val routeRefreshController: RouteRefreshController
 
     private var notificationChannelField: Field? = null
     private val MAPBOX_NAVIGATION_NOTIFICATION_PACKAGE_NAME =
@@ -175,6 +178,7 @@ constructor(
         )
         tripSession.registerOffRouteObserver(internalOffRouteObserver)
         tripSession.registerStateObserver(navigationSession)
+
         ifNonNull(accessToken) { token ->
             MapboxMetricsReporter.init(
                 context,
@@ -194,7 +198,15 @@ constructor(
 
         adjustedRouteOptionsProvider = AdjustedRouteOptionsProvider(directionsSession, tripSession)
         fasterRouteController = FasterRouteController(adjustedRouteOptionsProvider, directionsSession, tripSession)
+        routeRefreshController = RouteRefreshController(tripSession, RouteRefreshApi())
+        routeRefreshController.accessToken = accessToken ?: ""
+        routeRefreshController.intervalSeconds = 10
+        routeRefreshController.refreshRoute { routeRefresh ->
+            tripSession.route = routeRefresh.refreshedRoute
+        }
     }
+
+
 
     /**
      * Starts listening for location updates and enters an `Active Guidance` state if there's a primary route available
@@ -291,6 +303,7 @@ constructor(
             tripSession.unregisterAllBannerInstructionsObservers()
             tripSession.unregisterAllVoiceInstructionsObservers()
             fasterRouteController.stop()
+            routeRefreshController.stop()
         }
     }
 
