@@ -24,38 +24,38 @@ workflows:
       - release-core-1_0:
           filters:
             tags:
-              only: /^release-core-1.0-.*/
+              only: /^core-*/
             branches:
               ignore: /.*/
       - release-ui-1_0:
           filters:
             tags:
-              only: /^release-ui-1.0-.*/
+              only: /^ui-*:core-*/
             branches:
               ignore: /.*/
       - release-core-1_0-qa:
           filters:
             tags:
-              only: /^qa-release-core-1.0-.*/
+              only: /^qa-core-*/
             branches:
               ignore: /.*/
       - release-ui-1_0-qa:
           filters:
             tags:
-              only: /^qa-release-ui-1.0-.*/
+              only: /^qa-ui-*:core-*/
             branches:
               ignore: /.*/
       - release-core-1_0-prod:
           filters:
             tags:
-              only: /^prod-release-core-1.0-.*/
+              only: /^prod-core-*/
             branches:
               ignore: /.*/
 
       - release-ui-1_0-prod:
           filters:
             tags:
-              only: /^prod-release-ui-1.0-.*/
+              only: /^prod-ui-*:core-*/
             branches:
               ignore: /.*/
       - ui-tests-1_0
@@ -187,6 +187,56 @@ commands:
           destination: << parameters.module_target >>/reports
       - store_test_results:
           path: << parameters.module_target >>/build/test-results
+
+  update-ui-version-name:
+    steps:
+      - run:
+          name: Build Navigation SDK 1.0 (debug)
+          command: |
+            if [[ $CIRCLE_TAG == ui-*:core-* ]]; then
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:3:5}/" libnavigation-ui/gradle.properties
+            else if [[ $CIRCLE_TAG == qa-ui-*:core-* ]]; then
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:6:5}/" libnavigation-ui/gradle.properties
+            else if [[ $CIRCLE_TAG == prod-ui-*:core-* ]]; then
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:8:5}/" libnavigation-ui/gradle.properties
+            fi
+
+  update-core-version-name:
+    steps:
+      - run:
+          name: Build Navigation SDK 1.0 (debug)
+          command: |
+            if [[ $CIRCLE_TAG == core-* ]]; then
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:5}/" libdirections-hybrid/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:5}/" libdirections-onboard/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:5}/" libdirections-offboard/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:5}/" libnavigation-base/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:5}/" libnavigation-core/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:5}/" libnavigation-metrics/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:5}/" libnavigation-util/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:5}/" libnavigator/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:5}/" libtrip-notification/gradle.properties
+            else if [[ $CIRCLE_TAG == qa-core-* ]]; then
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:8}/" libdirections-hybrid/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:8}/" libdirections-onboard/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:8}/" libdirections-offboard/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:8}/" libnavigation-base/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:8}/" libnavigation-core/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:8}/" libnavigation-metrics/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:8}/" libnavigation-util/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:8}/" libnavigator/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:8}/" libtrip-notification/gradle.properties
+            else if [[ $CIRCLE_TAG == prod-core-* ]]; then
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:10}/" libdirections-hybrid/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:10}/" libdirections-onboard/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:10}/" libdirections-offboard/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:10}/" libnavigation-base/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:10}/" libnavigation-core/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:10}/" libnavigation-metrics/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:10}/" libnavigation-util/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:10}/" libnavigator/gradle.properties
+              sed -i -e "s/^POM_VERSION_NAME=.*/POM_VERSION_NAME=${CIRCLE_TAG:10}/" libtrip-notification/gradle.properties
+            fi
 
   build-core-debug-1_0:
     steps:
@@ -459,6 +509,7 @@ jobs:
     docker:
       - image: mbgl/61abee1674:android-ndk-r18
     steps:
+      - update-core-version-name
       - checkout
       - build-release-core-1_0
       - generate-documentation
@@ -478,6 +529,7 @@ jobs:
     environment:
       BINTRAY_REPO: mapbox
     steps:
+      - update-core-version-name
       - checkout
       - build-release-core-1_0
       - generate-documentation
@@ -496,6 +548,7 @@ jobs:
     environment:
       BINTRAY_REPO: mapbox_private
     steps:
+      - update-core-version-name
       - checkout
       - build-release-core-1_0
       - generate-documentation
@@ -514,6 +567,7 @@ jobs:
     environment:
       BINTRAY_REPO: mapbox_collab
     steps:
+      - update-core-version-name
       - checkout
       - build-release-core-1_0
       - generate-documentation
@@ -549,6 +603,7 @@ jobs:
     environment:
       BINTRAY_REPO: mapbox
     steps:
+      - update-ui-version-name
       - checkout
       - build-release-ui-1_0
       - generate-documentation
@@ -567,6 +622,7 @@ jobs:
     environment:
       BINTRAY_REPO: mapbox_private
     steps:
+      - update-ui-version-name
       - checkout
       - build-release-ui-1_0
       - generate-documentation
@@ -585,6 +641,7 @@ jobs:
     environment:
       BINTRAY_REPO: mapbox_collab
     steps:
+      - update-ui-version-name
       - checkout
       - build-release-ui-1_0
       - generate-documentation
