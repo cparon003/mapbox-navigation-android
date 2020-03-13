@@ -53,9 +53,9 @@ dependencies {
   ktlint dependenciesList.ktlint
 
   // Navigation SDK
-  api "com.mapbox.navigation:core:1.0.0-qa.4"
-  implementation "com.mapbox.navigation:utils:1.0.0-qa.4"
-  implementation "com.mapbox.navigation:notification:1.0.0-qa.4"
+  api project(':libnavigation-core')
+  implementation project(':libnavigation-util')
+  implementation project(':libtrip-notification')
 
   // Mapbox
   implementation dependenciesList.mapboxSdkServices
