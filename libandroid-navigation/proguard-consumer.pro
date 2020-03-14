@@ -19,3 +19,7 @@
 
 # --- Telemetry ---
 -keep class com.mapbox.android.telemetry.** { *; }
+
+# Temporarily adding this explicitly here as we were seeing Maps events being obfuscated
+# --- Maps SDK Telemetry ---
+-keep class com.mapbox.mapboxsdk.module.telemetry.**
